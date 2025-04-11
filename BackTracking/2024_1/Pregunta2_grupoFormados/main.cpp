@@ -1,45 +1,37 @@
 #include <iostream>
-#include <cstring>
 using namespace std;
 
-const int MAX = 20;
+int arr[4] = {1, 2, 4, 5};
+int n = 4;
+int solucion[4] = {};   // 0 = espacio antes, 1 = unir al grupo anterior
 
-char equipos[] = "4592";
-int tam = strlen(equipos);
-char resultado[MAX];
+void imprimir() {
+    for (int i = 0; i < n; i++) {
+        if (i > 0 && solucion[i] == 0) cout << " "; // espacio si es nuevo grupo
+        cout << arr[i];
+    }
+    cout << endl;
+}
 
-void backtrack(int index, int resIndex) {
-    if (index == tam) {
-        resultado[resIndex] = '\0'; // terminar la cadena
-        cout << resultado << endl;
+void backtrack(int i) {
+    if (i == n) {
+        imprimir();
         return;
     }
 
-    char grupo[MAX];
-    int len = 0;
+    // Opción 1: unir al grupo anterior (no espacio antes)
+    solucion[i] = 1;
+    backtrack(i + 1);
 
-    for (int i = index; i < tam; i++) {
-        grupo[len++] = equipos[i];
-        grupo[len] = '\0';
-
-        // Copiar grupo al resultado
-        for (int j = 0; j < len; j++) {
-            resultado[resIndex + j] = grupo[j];
-        }
-
-        int nextIndex = resIndex + len;
-
-        // Agregar espacio si no estamos al final
-        if (i < tam - 1) {
-            resultado[nextIndex] = ' ';
-            backtrack(i + 1, nextIndex + 1);
-        } else {
-            backtrack(i + 1, nextIndex);
-        }
+    // Opción 2: separar con espacio (nuevo grupo)
+    if (i > 0) { // no tiene sentido separar el primer elemento
+        solucion[i] = 0;
+        backtrack(i + 1);
     }
 }
 
 int main() {
-    backtrack(0, 0);
+    solucion[0] = 1; // el primero siempre empieza sin espacio
+    backtrack(1);
     return 0;
 }
