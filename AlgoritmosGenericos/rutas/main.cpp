@@ -68,6 +68,7 @@ int calcularDistancia(const vector<int> &poblacion, int distancias[][NUM_CIUDADE
 
 void imprimirPoblacion(const vector<vector<int>> &poblacion, int distancias[][NUM_CIUDADES]) {
     for (const auto& elem : poblacion) {
+        cout << 0 <<"  ";
         for (const auto& valor : elem) {
             cout << valor << "  ";
         }
@@ -77,13 +78,19 @@ void imprimirPoblacion(const vector<vector<int>> &poblacion, int distancias[][NU
 
 void calculaSupervivencia(vector<vector<int>> poblacion,
         vector<int>& supervivencia, int distancias[][NUM_CIUDADES]) {
-    int suma = 0;
+    vector<double> fitnessValues;
+    double sumaFitness = 0.0;
 
-    for (int i = 0; i < poblacion.size(); i++)
-        suma += calcularDistancia(poblacion[i], distancias);
     for (int i = 0; i < poblacion.size(); i++) {
-        int fit = round(100 * (double) calcularDistancia(poblacion[i], distancias) / suma);
-        supervivencia.push_back(fit);
+        double dist = calcularDistancia(poblacion[i], distancias);
+        double fit = 1.0 / dist; // siempre dist > 0 ya que hay rutas 
+        fitnessValues.push_back(fit);
+        sumaFitness += fit;
+    }
+
+    for (int i = 0; i < fitnessValues.size(); i++) {
+        int porcentaje = round(100.0 * fitnessValues[i] / sumaFitness);
+        supervivencia.push_back(porcentaje);
     }
 }
 
@@ -203,8 +210,9 @@ void muestraMasApto(vector<vector<int>> &poblacion, int distancias[][NUM_CIUDADE
     int mejor = 0;
 
     int mejorActual = calcularDistancia(poblacion[mejor], distancias);
-    cout << endl << "La mejor solucion es:" << mejorActual << "  ";
+    cout << endl << "La mejor solucion es: " << mejorActual << "  ";
 
+    cout << 0 <<"  ";
     for (int i = 0; i < poblacion[mejor].size(); i++) {
         cout << poblacion[mejor][i] << "  ";
     }
